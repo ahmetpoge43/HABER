@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+import time
+import webbrowser
+import http.server
+import socketserver
+import os
+
+PORT = 8000
+
+# HTML içeriği (Otomatik Yenilenen Türkçe Haber Widget'ı)
+html_content = """<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
@@ -64,7 +73,7 @@
 
     // Yeni script'i konteynere ekle (bu, widget'ı yeniden yükler)
     container.querySelector('.tradingview-widget-container').appendChild(newScript);
-    console.log('Haber widget\'ı anlık verilerle yenilendi.');
+    console.log('Haber widget\\'ı anlık verilerle yenilendi.');
   }
 
   // Yenileme sıklığı: Her 60 saniyede bir (60000 milisaniye)
@@ -73,3 +82,29 @@
 
 </body>
 </html>
+"""
+
+# HTML dosyasını oluştur
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("✓ index.html dosyası başarıyla oluşturuldu.")
+print("✓ Yerel sunucu başlatılıyor...")
+
+# Basit bir HTTP sunucusu başlat
+Handler = http.server.SimpleHTTPRequestHandler
+
+with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    print(f"✓ Haber widget'ı http://localhost:{PORT} adresinden sunuluyor.")
+    print("✓ Tarayıcı otomatik olarak açılıyor...")
+    
+    # Tarayıcıda yerel URL'yi aç
+    webbrowser.open(f"http://localhost:{PORT}")
+    
+    print("✓ Kapatmak için terminalde Ctrl+C tuşlarına basın.")
+    
+    # Sunucuyu çalışır durumda tut
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\n✓ Sunucu durduruldu.")
