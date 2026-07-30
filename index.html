@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Türkçe Canlı Piyasa Haberleri</title>
+  <title>Anlık Yenilenen Türkçe Piyasa Haberleri</title>
   <style>
     * {
       box-sizing: border-box;
@@ -16,6 +16,10 @@
       height: 100vh;
       overflow: hidden;
     }
+    #news-widget-container {
+      height: 100%;
+      width: 100%;
+    }
     .tradingview-widget-container {
       height: 100%;
       width: 100%;
@@ -24,20 +28,48 @@
 </head>
 <body>
 
-<!-- TradingView Türkçe Piyasa Haberleri Widget'ı -->
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-news.js" async>
-  {
-    "width": "100%",
-    "height": "100%",
-    "colorTheme": "dark",
-    "isTransparent": true,
-    "locale": "tr",
-    "feedMode": "all_symbols"
-  }
-  </script>
+<!-- Widget'ın yerleştirileceği ana konteyner -->
+<div id="news-widget-container">
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script id="tv-news-script" type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-news.js" async>
+    {
+      "width": "100%",
+      "height": "100%",
+      "colorTheme": "dark",
+      "isTransparent": true,
+      "locale": "tr",
+      "feedMode": "all_symbols"
+    }
+    </script>
+  </div>
 </div>
+
+<script>
+  // Otomatik yenileme fonksiyonu (sadece widget'ı yeniler)
+  function refreshWidget() {
+    const container = document.getElementById('news-widget-container');
+    const oldScript = document.getElementById('tv-news-script');
+
+    // Eski script'i ve widget içeriğini temizle
+    container.innerHTML = '<div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div></div>';
+
+    // Yeni script elementini oluştur
+    const newScript = document.createElement('script');
+    newScript.id = 'tv-news-script';
+    newScript.type = 'text/javascript';
+    newScript.src = oldScript.src;
+    newScript.async = true;
+    newScript.textContent = oldScript.textContent; // Widget ayarlarını kopyala
+
+    // Yeni script'i konteynere ekle (bu, widget'ı yeniden yükler)
+    container.querySelector('.tradingview-widget-container').appendChild(newScript);
+    console.log('Haber widget\'ı anlık verilerle yenilendi.');
+  }
+
+  // Yenileme sıklığı: Her 60 saniyede bir (60000 milisaniye)
+  setInterval(refreshWidget, 60000); 
+</script>
 
 </body>
 </html>
