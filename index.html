@@ -1,110 +1,48 @@
-import time
-import webbrowser
-import http.server
-import socketserver
-import os
-
-PORT = 8000
-
-# HTML içeriği (Otomatik Yenilenen Türkçe Haber Widget'ı)
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anlık Yenilenen Türkçe Piyasa Haberleri</title>
+  <title>Canlı Piyasa Haber Akışı</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
       background-color: #191919; /* Notion Dark Mode Arka Planı */
-      padding: 8px;
-      height: 100vh;
       overflow: hidden;
     }
-    #news-widget-container {
-      height: 100%;
-      width: 100%;
-    }
     .tradingview-widget-container {
-      height: 100%;
       width: 100%;
+      height: 100vh;
+    }
+    .tradingview-widget-container__widget {
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
 
-<!-- Widget'ın yerleştirileceği ana konteyner -->
-<div id="news-widget-container">
-  <div class="tradingview-widget-container">
-    <div class="tradingview-widget-container__widget"></div>
-    <script id="tv-news-script" type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-news.js" async>
-    {
-      "width": "100%",
-      "height": "100%",
-      "colorTheme": "dark",
-      "isTransparent": true,
-      "locale": "tr",
-      "feedMode": "all_symbols"
-    }
-    </script>
-  </div>
-</div>
-
-<script>
-  // Otomatik yenileme fonksiyonu (sadece widget'ı yeniler)
-  function refreshWidget() {
-    const container = document.getElementById('news-widget-container');
-    const oldScript = document.getElementById('tv-news-script');
-
-    // Eski script'i ve widget içeriğini temizle
-    container.innerHTML = '<div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div></div>';
-
-    // Yeni script elementini oluştur
-    const newScript = document.createElement('script');
-    newScript.id = 'tv-news-script';
-    newScript.type = 'text/javascript';
-    newScript.src = oldScript.src;
-    newScript.async = true;
-    newScript.textContent = oldScript.textContent; // Widget ayarlarını kopyala
-
-    // Yeni script'i konteynere ekle (bu, widget'ı yeniden yükler)
-    container.querySelector('.tradingview-widget-container').appendChild(newScript);
-    console.log('Haber widget\\'ı anlık verilerle yenilendi.');
+<!-- TradingView Haber Akışı Widget'ı -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+  {
+    "feedMode": "all_symbols",
+    "colorTheme": "dark",
+    "isTransparent": true,
+    "displayMode": "regular",
+    "width": "100%",
+    "height": "100%",
+    "locale": "tr"
   }
-
-  // Yenileme sıklığı: Her 60 saniyede bir (60000 milisaniye)
-  setInterval(refreshWidget, 60000); 
-</script>
+  </script>
+</div>
 
 </body>
 </html>
-"""
-
-# HTML dosyasını oluştur
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-print("✓ index.html dosyası başarıyla oluşturuldu.")
-print("✓ Yerel sunucu başlatılıyor...")
-
-# Basit bir HTTP sunucusu başlat
-Handler = http.server.SimpleHTTPRequestHandler
-
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print(f"✓ Haber widget'ı http://localhost:{PORT} adresinden sunuluyor.")
-    print("✓ Tarayıcı otomatik olarak açılıyor...")
-    
-    # Tarayıcıda yerel URL'yi aç
-    webbrowser.open(f"http://localhost:{PORT}")
-    
-    print("✓ Kapatmak için terminalde Ctrl+C tuşlarına basın.")
-    
-    # Sunucuyu çalışır durumda tut
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        print("\n✓ Sunucu durduruldu.")
