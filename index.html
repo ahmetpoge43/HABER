@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canlı Piyasa ve Haber Akışı</title>
+  <title>TradingView Canlı Piyasa Haber Akışı</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,7 +13,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      background-color: #191919; /* Notion Dark Mode Arka Planı */
+      background-color: #191919; /* Notion Dark Mode ile uyumlu arka plan */
       overflow: hidden;
     }
     .tradingview-widget-container {
@@ -28,50 +28,17 @@
 </head>
 <body>
 
-<!-- TradingView Market Overview & News Widget -->
+<!-- TradingView Piyasa Haberleri (Markets News) Widget -->
 <div class="tradingview-widget-container">
   <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-news.js" async>
   {
-    "colorTheme": "dark",
-    "dateRange": "1D",
-    "showChart": true,
-    "locale": "tr",
     "width": "100%",
     "height": "100%",
-    "largeChartUrl": "",
+    "colorTheme": "dark",
     "isTransparent": true,
-    "showSymbolLogo": true,
-    "showFloatingTooltip": true,
-    "plotLineColorGrowing": "rgba(41, 98, 255, 1)",
-    "plotLineColorFalling": "rgba(255, 74, 104, 1)",
-    "gridLineColor": "rgba(240, 243, 250, 0)",
-    "scaleFontColor": "rgba(120, 123, 134, 1)",
-    "belowLineFillColorGrowing": "rgba(41, 98, 255, 0.12)",
-    "belowLineFillColorFalling": "rgba(255, 74, 104, 0.12)",
-    "belowLineFillColorGrowingBottom": "rgba(41, 98, 255, 0)",
-    "belowLineFillColorFallingBottom": "rgba(255, 74, 104, 0)",
-    "symbolColor": "#d1d4dc",
-    "tabs": [
-      {
-        "title": "Piyasalar",
-        "symbols": [
-          {
-            "s": "OANDA:XAUUSD",
-            "d": "ONS ALTIN"
-          },
-          {
-            "s": "CAPITALCOM:US100",
-            "d": "NASDAQ (US100)"
-          },
-          {
-            "s": "INDEX:DAX",
-            "d": "DAX 40"
-          }
-        ],
-        "quick_link": "gainer_loser"
-      }
-    ]
+    "locale": "tr",
+    "feedMode": "all_symbols"
   }
   </script>
 </div>
